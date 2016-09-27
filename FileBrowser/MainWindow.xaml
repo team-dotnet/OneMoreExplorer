@@ -1,0 +1,207 @@
+﻿<Window
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:model="clr-namespace:FileBrowser.Model"
+	xmlns:view="clr-namespace:FileBrowser.View"
+	mc:Ignorable="d"
+	x:Class="FileBrowser.MainWindow"
+	Title="Magic sphere browser"
+	Height="500"
+	Width="500"
+	AllowsTransparency="True"
+	WindowStyle="None"
+	Background="Transparent">
+	<Window.Resources>
+		<view:SphereGeometry3D x:Key="SphereGeometrySource"/>
+		<MeshGeometry3D
+			x:Key="SphereGeometry"
+			Positions="{Binding Points, Source={StaticResource SphereGeometrySource}}"
+			TriangleIndices="{Binding TriangleIndices, Source={StaticResource SphereGeometrySource}}"
+			TextureCoordinates="{Binding TextureCoordinates, Source={StaticResource SphereGeometrySource}}"/>
+		<DiffuseMaterial
+			x:Key="SphereMaterial"
+			Viewport2DVisual3D.IsVisualHostMaterial="True">
+		</DiffuseMaterial>
+	</Window.Resources>
+	<Grid>
+		<Viewport3D>
+			<Viewport3D.Camera>
+				<PerspectiveCamera
+					x:Name="MyCamera"
+					Position="110 0 0"
+					LookDirection="-1 0 0"
+					UpDirection="0 1 0"
+					FieldOfView="90"/>
+			</Viewport3D.Camera>
+			<Viewport2DVisual3D
+				Material="{StaticResource SphereMaterial}"
+				Geometry="{StaticResource SphereGeometry}">
+				<Viewport2DVisual3D.Visual>
+					<Grid
+						Height="500"
+						Width="500">
+						<Image Source="Resources/sphereTexture.png"></Image>
+						<Grid Margin="130,100,130,100">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="100"/>
+								<RowDefinition Height="100"/>
+								<RowDefinition Height="100"/>
+							</Grid.RowDefinitions>
+							<Grid.Resources>
+								<ControlTemplate x:Key="IconTemplate">
+									<Grid
+										HorizontalAlignment="Stretch"
+										VerticalAlignment="Stretch">
+										<StackPanel
+											VerticalAlignment="Center">
+											<Image
+													Source="{Binding Icon}"
+													Width="32"
+													Height="32"/>
+											<TextBlock
+													HorizontalAlignment="Center"
+													VerticalAlignment="Center"
+													FontSize="8"
+													Foreground="Black"
+													Text="{Binding Name}"/>
+										</StackPanel>
+										<ContentPresenter/>
+									</Grid>
+								</ControlTemplate>
+								<DataTemplate
+									x:Key="FileItemTemplate"
+									DataType="model:FileItem">
+									<Grid
+										Width="50"
+										Height="100">
+										<Button
+											Command="{Binding ClickCommand}"
+											Template="{StaticResource IconTemplate}"
+											Margin="0,0,0,0">
+										</Button>
+									</Grid>
+								</DataTemplate>
+							</Grid.Resources>
+
+							<ScrollViewer
+								x:Name="PreviousLevelScrollViewer"
+								Grid.Row="0"
+								VerticalScrollBarVisibility="Disabled"
+								HorizontalScrollBarVisibility="Auto"
+								VerticalContentAlignment="Center">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="95"/>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="95"/>
+									</Grid.ColumnDefinitions>
+									<Grid Grid.Column="0"/>
+									<ListBox
+										x:Name="PreviousLevel"
+										Grid.Column="1"
+										ScrollViewer.VerticalScrollBarVisibility="Disabled"
+										ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+										ItemTemplate="{DynamicResource FileItemTemplate}"
+										Background="Transparent"
+										BorderBrush="Transparent"
+										HorizontalAlignment="Center"
+										SelectionChanged="OnSelectionChanged">
+										<ListBox.ItemsPanel>
+											<ItemsPanelTemplate>
+												<WrapPanel IsItemsHost="True"/>
+											</ItemsPanelTemplate>
+										</ListBox.ItemsPanel>
+									</ListBox>
+									<Grid Grid.Column="0"/>
+								</Grid>
+							</ScrollViewer>
+							<ScrollViewer
+								x:Name="CurrentLevelScrollViewer"
+								Grid.Row="1"
+								VerticalScrollBarVisibility="Disabled"
+								HorizontalScrollBarVisibility="Auto"
+								VerticalContentAlignment="Center">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="95"/>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="95"/>
+									</Grid.ColumnDefinitions>
+									<Grid Grid.Column="0"/>
+									<ListBox
+										x:Name="CurrentLevel"
+										Grid.Column="1"
+										ScrollViewer.VerticalScrollBarVisibility="Disabled"
+										ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+										ItemTemplate="{StaticResource FileItemTemplate}"
+										Background="Transparent"
+										BorderBrush="Transparent"
+										HorizontalAlignment="Center"
+										SelectionChanged="OnSelectionChanged">
+										<ListBox.ItemsPanel>
+											<ItemsPanelTemplate>
+												<WrapPanel IsItemsHost="True"/>
+											</ItemsPanelTemplate>
+										</ListBox.ItemsPanel>
+									</ListBox>
+									<Grid Grid.Column="2"/>
+								</Grid>
+							</ScrollViewer>
+							<ScrollViewer
+								x:Name="NextLevelScrollViewer"
+								Grid.Row="2"
+								VerticalScrollBarVisibility="Disabled"
+								HorizontalScrollBarVisibility="Auto"
+								VerticalContentAlignment="Center">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="95"/>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="95"/>
+									</Grid.ColumnDefinitions>
+									<Grid Grid.Column="0"/>
+									<ListBox
+										x:Name="NextLevel"
+										Grid.Column="1"
+										ScrollViewer.VerticalScrollBarVisibility="Disabled"
+										ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+										ItemTemplate="{DynamicResource FileItemTemplate}"
+										Background="Transparent"
+										BorderBrush="Transparent"
+										HorizontalAlignment="Center"
+										SelectionChanged="OnSelectionChanged">
+										<ListBox.ItemsPanel>
+											<ItemsPanelTemplate>
+												<WrapPanel IsItemsHost="True"/>
+											</ItemsPanelTemplate>
+										</ListBox.ItemsPanel>
+									</ListBox>
+									<Grid Grid.Column="0"/>
+								</Grid>
+							</ScrollViewer>
+						</Grid>
+					</Grid>
+				</Viewport2DVisual3D.Visual>
+			</Viewport2DVisual3D>
+			<ModelVisual3D>
+				<ModelVisual3D.Content>
+					<DirectionalLight
+							Color="#FFFFFFFF"
+							Direction="-1,0,0"/>
+				</ModelVisual3D.Content>
+			</ModelVisual3D>
+		</Viewport3D>
+		<Image
+			Source="Resources/minimize.png"
+			Margin="336,18,132,452"
+			MouseDown="MinimizeButtonOnClick">
+		</Image>
+		<Image
+			Source="Resources/close.png"
+			Margin="368,34,100,436"
+			MouseDown="ExitButtonOnClick">
+		</Image>
+	</Grid>
+</Window>
